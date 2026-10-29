@@ -79,6 +79,18 @@ pub const Scanner = struct {
         }
     }
 
+    fn string(self: *const Scanner) Token {
+        if (self.peek() != '"' and !self.isEnd()) {
+            if (self.peek() == '\n') self.line += 1;
+            _ = self.advance();
+        }
+
+        if (self.isEnd()) return self.makeToken(.@"error");
+
+        _ = self.advance();
+        return self.makeToken(.string);
+    }
+
     fn peek(self: *const Scanner) u8 {
         if (self.isEnd()) return 0;
         return self.source[self.cur];
